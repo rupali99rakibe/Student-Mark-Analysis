@@ -5,7 +5,7 @@ from langdetect.lang_detect_exception import LangDetectException
 import time
 
 # Set your OpenAI API key
-openai.api_key = "sk-jxHNeitHqQ7Q1hArkTo2XQkpG_JUU0fdpgiRuoebcZT3BlbkFJTbMHcXre_nSUrX6Jzesp8peW0DYtE8EN0Cnt3zelwA"  # Replace with your actual OpenAI API key
+openai.api_key = "OPENAI_API_KEY"  # Replace with your actual OpenAI API key
 
 def collect_student_response():
     """Function to collect student responses and return question, answer, and marks."""

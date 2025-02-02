@@ -1,135 +1,104 @@
+import json
+import pymongo
 import openai
-import re
-from langdetect import detect
-from langdetect.lang_detect_exception import LangDetectException
-import time
 
-# Set your OpenAI API key
-openai.api_key = "OPENAI_API_KEY"  # Replace with your actual OpenAI API key
+# Database Connection
+client = pymongo.MongoClient("mongodb://localhost:27017/")
+db = client["ExamDatabase"]
+questions_collection = db["questions"]
+answers_collection = db["answers"]
 
-def collect_student_response():
-    """Function to collect student responses and return question, answer, and marks."""
-    question = input("\nEnter the exam question: ")
-    if question.lower() in ['exit', 'quit']:
-        return None, None, None
+# OpenAI API Key (Use Environment Variable in Production)
+openai.api_key = "your-api-key"
 
-    print("Enter the student's answer (press Enter twice to finish):")
-    student_answer_lines = []
-    while True:
-        line = input()
-        if line == "":
-            break
-        student_answer_lines.append(line)
-    user_answer = "\n".join(student_answer_lines)
+def getQuestionDetails(QuestionID):
+    question = questions_collection.find_one({"QuestionID": QuestionID})
+    if question:
+        return {
+            "question": question.get('question'),
+            "evaluation_criteria": question.get('evaluation_criteria'),
+            "ideal_answer": question.get('ideal_answer'),
+            "marks": question.get('marks')
+        }
+    return {"error": "Question not found!"}
+
+def getStudentAnswer(QuestionID, StudentID):
+    student_answer = answers_collection.find_one({
+        "QuestionID": QuestionID,
+        "StudentID": StudentID
+    })
+    if student_answer:
+        return {
+            "QuestionID": student_answer['QuestionID'],
+            "StudentID": student_answer['StudentID'],
+            "Student_answer": student_answer['Student_answer']
+        }
+    return {"error": "Student answer not found!"}
+
+def GenerateSystemPrompt(question_details):
+    prompt = f"""
+    You are an AI evaluator assessing a student's answer. Evaluate the response based on the given criteria and strictly follow these instructions:
     
-    while True:
-        marks = input("Enter the marks for the question (1, 2, 3, ..., 7 or 10): ").strip()
-        if marks.isdigit() and marks in {"1", "2", "3", "4", "5", "6", "7", "10"}:
-            return question, user_answer, int(marks)
-        else:
-            print("Invalid marks entry. Please enter a valid number from the options provided.")
+    1. Compare the student's answer with the ideal answer.
+    2. Assess the response based on the given evaluation criteria.
+    3. Assign marks out of {question_details['marks']} based on correctness and completeness.
+    4. Provide a clear reason for the marks given.
+    5. If necessary, suggest improvements based on the ideal answer.
+    
+    Format your response strictly as JSON:
+    {{
+        "marks": <numeric_value>,
+        "reason": "<justification>",
+        "reference": "<if any, otherwise null>"
+    }}
+    
+    Here is the question and the details:
 
-def safe_api_call(model, messages, max_tokens=400, retries=3):
-    """Handles OpenAI API call errors and retries if needed."""
-    for attempt in range(retries):
-        try:
-            response = openai.ChatCompletion.create(
-                model=model,
-                messages=messages,
-                max_tokens=max_tokens
-            )
-            return response
-        except openai.error.OpenAIError as e:
-            print(f"OpenAI API error: {e}. Retrying ({attempt+1}/{retries})...")
-            time.sleep(2)
-    return None
+    Question: {question_details['question']}
+    Evaluation Criteria: {question_details['evaluation_criteria']}
+    Ideal Answer: {question_details['ideal_answer']}
+    Marks Available: {question_details['marks']}
+    
+    Student's answer will be provided next.
+    """
+    return prompt
 
-def evaluate_response(question, user_answer, marks):
-    """Evaluates a student's response using OpenAI GPT-4 with strict grading rules."""
+def validate_marks(assigned_marks, total_marks):
+    if not isinstance(assigned_marks, (int, float)) or assigned_marks < 0 or assigned_marks > total_marks:
+        return False
+    return True
+
+def evaluateStudentAnswer(prompt, student_answer):
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[
+            {"role": "system", "content": prompt},
+            {"role": "user", "content": student_answer}
+        ],
+        max_tokens=300
+    )
+    
     try:
-        if not user_answer.strip():
-            return f"**Marks Awarded: 0/{marks}**\n**Feedback:** Unanswered the question.\n**Study Reference:** Read your textbook or class notes on this topic.", 0, marks
+        evaluation = json.loads(response['choices'][0]['message']['content'])
+        if not validate_marks(evaluation.get("marks"), 10):  # Example total marks: 10
+            return {"error": "Invalid marks assigned by AI"}
+    except (json.JSONDecodeError, ValueError) as e:
+        return {"error": "AI response could not be processed", "details": str(e)}
 
-        detected_language = "en"
-        try:
-            detected_language = detect(user_answer)  
-        except LangDetectException:
-            pass
+    return evaluation
 
-        prompt = f"""
-You are an AI exam evaluator. Your task is to **strictly** assess a student's answer based on accuracy, clarity, and relevance.
+# Example Usage
+QuestionID = "Q123"
+StudentID = "S456"
 
-### **Evaluation Guidelines:**
-1. **Full Marks:** Awarded only if the answer is **complete, correct, and well-articulated**.
-2. **Partial Marks:** Deduct marks for **missing information, incorrect details, or lack of clarity**.
-3. **Zero Marks:** If the answer is **completely incorrect, irrelevant, or missing key concepts**.
-4. **No Assumptions:** Only evaluate based on the exact words provided in the student's response.
-5. **Concise Feedback:** Limit feedback to key strengths and areas for improvement.
-
----
-### **Strict Response Format:**
-- **Marks Awarded: X/{marks}** (Ensure `X` does not exceed `{marks}`)
-- **Feedback:** [A brief evaluation focusing on correctness, clarity, and relevance]
-- **Study Reference:** [If the answer is incomplete or incorrect, suggest a book, article, or website to improve understanding.]
-
----
-### **Now, evaluate the following student response strictly according to these rules:**
-Question: {question}  
-Student Answer: {user_answer}  
-Total Marks: {marks}
-
-Return your response **ONLY in the format specified above**.
-"""
-
-        response = safe_api_call(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": "You are an AI exam evaluator, strictly following structured assessment rules."},
-                {"role": "user", "content": prompt}
-            ],
-            max_tokens=300
-        )
-
-        if not response or "choices" not in response or not response["choices"]:
-            return "Error: No response from OpenAI.", 0, marks
-
-        evaluation_text = response["choices"][0]["message"]["content"].strip()
-
-        marks_match = re.search(r'Marks Awarded[:\-]?\s*(\d*\.?\d+)\s*/\s*(\d+)', evaluation_text)
-        if marks_match:
-            awarded_marks = float(marks_match.group(1))
-            total_marks = int(marks_match.group(2))
-            awarded_marks = min(awarded_marks, marks)  
-        else:
-            awarded_marks = 0  
-            total_marks = marks
-
-        return evaluation_text, awarded_marks, total_marks
-    except Exception as e:
-        print(f"Unexpected error: {e}")
-        return "An unexpected error occurred.", 0, marks
-
-def run_exam_checker():
-    """Main function to run the exam checker loop."""
-    print("Welcome to the Exam Checker! (Type 'exit' or 'quit' to stop)")
-    total_awarded_marks, total_possible_marks = 0, 0
-    
-    while True:
-        question, user_answer, marks = collect_student_response()
-        if question is None:
-            break
-
-        evaluation, awarded_marks, total_marks = evaluate_response(question, user_answer, marks)
-        print("\nEvaluation:")
-        print(evaluation)
-
-        print(f"\nMarks Analysis: {awarded_marks}/{total_marks}")
-        total_awarded_marks += awarded_marks
-        total_possible_marks += total_marks
-    
-    print("\nExiting Exam Checker. Total Summary:")
-    print(f"Total Marks Awarded: {total_awarded_marks}")
-    print(f"Total Possible Marks: {total_possible_marks}")
-
-# Run the exam checker
-run_exam_checker()
+question_details = getQuestionDetails(QuestionID)
+if "error" in question_details:
+    print(question_details)
+else:
+    student_answer_data = getStudentAnswer(QuestionID, StudentID)
+    if "error" in student_answer_data:
+        print(student_answer_data)
+    else:
+        system_prompt = GenerateSystemPrompt(question_details)
+        result = evaluateStudentAnswer(system_prompt, student_answer_data["Student_answer"])
+        print(result)

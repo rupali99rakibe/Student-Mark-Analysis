@@ -1,39 +1,43 @@
 import json
-import pymongo
+import boto3
 import openai
 
-# Database Connection
-client = pymongo.MongoClient("mongodb://localhost:27017/")
-db = client["ExamDatabase"]
-questions_collection = db["questions"]
-answers_collection = db["answers"]
+# Initialize DynamoDB Client
+dynamodb = boto3.resource('dynamodb', region_name='your-region')  # Set your AWS region
+questions_table = dynamodb.Table('questions')
+answers_table = dynamodb.Table('answers')
 
 # OpenAI API Key (Use Environment Variable in Production)
 openai.api_key = "your-api-key"
 
 def getQuestionDetails(QuestionID):
-    question = questions_collection.find_one({"QuestionID": QuestionID})
-    if question:
-        return {
-            "question": question.get('question'),
-            "evaluation_criteria": question.get('evaluation_criteria'),
-            "ideal_answer": question.get('ideal_answer'),
-            "marks": question.get('marks')
-        }
-    return {"error": "Question not found!"}
+    try:
+        response = questions_table.get_item(Key={"QuestionID": QuestionID})
+        if 'Item' in response:
+            question = response['Item']
+            return {
+                "question": question.get('question'),
+                "evaluation_criteria": question.get('evaluation_criteria'),
+                "ideal_answer": question.get('ideal_answer'),
+                "marks": question.get('marks')
+            }
+        return {"error": "Question not found!"}
+    except Exception as e:
+        return {"error": str(e)}
 
 def getStudentAnswer(QuestionID, StudentID):
-    student_answer = answers_collection.find_one({
-        "QuestionID": QuestionID,
-        "StudentID": StudentID
-    })
-    if student_answer:
-        return {
-            "QuestionID": student_answer['QuestionID'],
-            "StudentID": student_answer['StudentID'],
-            "Student_answer": student_answer['Student_answer']
-        }
-    return {"error": "Student answer not found!"}
+    try:
+        response = answers_table.get_item(Key={"QuestionID": QuestionID, "StudentID": StudentID})
+        if 'Item' in response:
+            student_answer = response['Item']
+            return {
+                "QuestionID": student_answer['QuestionID'],
+                "StudentID": student_answer['StudentID'],
+                "Student_answer": student_answer['Student_answer']
+            }
+        return {"error": "Student answer not found!"}
+    except Exception as e:
+        return {"error": str(e)}
 
 def GenerateSystemPrompt(question_details):
     prompt = f"""

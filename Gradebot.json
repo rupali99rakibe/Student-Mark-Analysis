@@ -1,0 +1,282 @@
+{
+    "questions": [
+      {
+        "question": "Explain photosynthesis.",
+        "evaluation_rubric": {
+          "definition": 1,
+          "role_of_sunlight": 1,
+          "mentioning_chlorophyll": 1,
+          "equation_for_photosynthesis": 1,
+          "importance_in_plants": 1
+        },
+        "sample_answers": [
+          { "answer": "Photosynthesis is a process in plants.", "marks": 1 },
+          { "answer": "Photosynthesis is a process where plants use sunlight to make food.", "marks": 2 },
+          { "answer": "Photosynthesis is a process where plants use sunlight and chlorophyll to produce food.", "marks": 3 },
+          { "answer": "Photosynthesis is the process by which plants use sunlight, chlorophyll, and carbon dioxide to produce glucose. The equation is CO₂ + H₂O → C₆H₁₂O₆ + O₂.", "marks": 4 },
+          { "answer": "Photosynthesis is the process by which plants use sunlight, chlorophyll, and carbon dioxide to produce glucose. This process is vital for plant growth as it provides energy for all biological activities. The equation is CO₂ + H₂O → C₆H₁₂O₆ + O₂.", "marks": 5 }
+        ]
+      },
+      {
+        "question": "What are the three states of matter? Explain with examples.",
+        "evaluation_rubric": {
+          "listing_three_states": 1,
+          "solid_state_with_example": 1,
+          "liquid_state_with_example": 1,
+          "gaseous_state_with_example": 1,
+          "explaining_state_changes": 1
+        },
+        "sample_answers": [
+          { "answer": "The three states of matter are solid, liquid, and gas.", "marks": 1 },
+          { "answer": "The three states of matter are solid, liquid, and gas. Solids have a fixed shape, like ice.", "marks": 2 },
+          { "answer": "The three states of matter are solid, liquid, and gas. Solids have a fixed shape, like ice. Liquids take the shape of their container, like water.", "marks": 3 },
+          { "answer": "The three states of matter are solid, liquid, and gas. Solids have a fixed shape, like ice. Liquids take the shape of their container, like water. Gases expand to fill any space, like oxygen in the air.", "marks": 4 },
+          { "answer": "The three states of matter are solid, liquid, and gas. Solids have a fixed shape, like ice. Liquids take the shape of their container, like water. Gases expand to fill any space, like oxygen in the air. Matter changes state through processes such as melting, evaporation, and condensation.", "marks": 5 }
+        ]
+      },
+      {
+        "question": "What is the function of the human heart?",
+        "evaluation_rubric": {
+          "pumps_blood": 1,
+          "circulates_oxygen_deoxygenated_blood": 1,
+          "role_of_arteries_veins": 1,
+          "supplies_nutrients": 1,
+          "maintains_body_functions": 1
+        },
+        "sample_answers": [
+          { "answer": "The heart pumps blood.", "marks": 1 },
+          { "answer": "The heart pumps blood and circulates oxygen.", "marks": 2 },
+          { "answer": "The heart pumps blood, circulates oxygen, and uses arteries and veins.", "marks": 3 },
+          { "answer": "The heart pumps blood, circulates oxygen, and supplies nutrients to the body.", "marks": 4 },
+          { "answer": "The heart pumps blood throughout the body, circulates oxygen and carbon dioxide, supplies nutrients, and maintains body functions.", "marks": 5 }
+        ]
+      },
+      {
+        "question": "What is the difference between renewable and non-renewable energy?",
+        "evaluation_rubric": {
+          "define_renewable_energy": 1,
+          "example_renewable": 1,
+          "define_non_renewable_energy": 1,
+          "example_non_renewable": 1,
+          "sustainability_importance": 1
+        },
+        "sample_answers": [
+          { "answer": "Renewable energy is energy that comes from natural sources.", "marks": 1 },
+          { "answer": "Renewable energy is energy that comes from natural sources, like sunlight.", "marks": 2 },
+          { "answer": "Renewable energy comes from natural sources, like sunlight. Non-renewable energy is from limited resources.", "marks": 3 },
+          { "answer": "Renewable energy comes from natural sources, like sunlight. Non-renewable energy is from limited resources, like coal.", "marks": 4 },
+          { "answer": "Renewable energy comes from natural sources like sunlight and wind, while non-renewable energy comes from limited resources like coal and oil. Renewable energy is preferred because it is sustainable and environmentally friendly.", "marks": 5 }
+        ]
+      },
+      {
+        "question": "What causes day and night?",
+        "evaluation_rubric": {
+          "earth_rotation": 1,
+          "spins_on_axis": 1,
+          "different_parts_face_sun": 1,
+          "full_rotation_24_hours": 1,
+          "example_or_effect": 1
+        },
+        "sample_answers": [
+          { "answer": "Day and night are caused by Earth's rotation.", "marks": 1 },
+          { "answer": "Day and night happen because Earth spins on its axis.", "marks": 2 },
+          { "answer": "Day and night occur because Earth spins on its axis, making different parts face the Sun.", "marks": 3 },
+          { "answer": "Day and night happen because Earth rotates on its axis every 24 hours, causing different parts to face the Sun at different times.", "marks": 4 },
+          { "answer": "Day and night happen because Earth rotates on its axis every 24 hours, making different parts face the Sun. This rotation creates time zones and causes sunrise and sunset.", "marks": 5 }
+        ]
+      },
+      {
+        "question": "What is the difference between renewable and non-renewable energy?",
+        "rubric": [
+          "Defining renewable energy",
+          "Giving an example of renewable energy",
+          "Defining non-renewable energy",
+          "Giving an example of non-renewable energy",
+          "Highlighting why renewable energy is preferred for sustainability"
+        ],
+        "sample_answers": [
+          {
+            "answer": "Renewable energy is energy that comes from natural sources.",
+            "marks": 1
+          },
+          {
+            "answer": "Renewable energy is energy that comes from natural sources, like sunlight.",
+            "marks": 2
+          },
+          {
+            "answer": "Renewable energy comes from natural sources, like sunlight. Non-renewable energy is from limited resources.",
+            "marks": 3
+          },
+          {
+            "answer": "Renewable energy comes from natural sources, like sunlight. Non-renewable energy is from limited resources, like coal.",
+            "marks": 4
+          },
+          {
+            "answer": "Renewable energy comes from natural sources like sunlight and wind, while non-renewable energy comes from limited resources like coal and oil. Renewable energy is preferred because it is sustainable and environmentally friendly.",
+            "marks": 5
+          }
+        ]
+      },
+      {
+        "question": "What causes day and night?",
+        "rubric": [
+          "Mentioning Earth's rotation",
+          "Stating that Earth spins on its axis",
+          "Explaining that different parts face the Sun at different times",
+          "Mentioning that one full rotation takes 24 hours",
+          "Providing an example or effect (e.g., time zones, sunrise/sunset)"
+        ],
+        "sample_answers": [
+          {
+            "answer": "Day and night are caused by Earth's rotation.",
+            "marks": 1
+          },
+          {
+            "answer": "Day and night happen because Earth spins on its axis.",
+            "marks": 2
+          },
+          {
+            "answer": "Day and night occur because Earth spins on its axis, making different parts face the Sun.",
+            "marks": 3
+          },
+          {
+            "answer": "Day and night happen because Earth rotates on its axis every 24 hours, causing different parts to face the Sun at different times.",
+            "marks": 4
+          },
+          {
+            "answer": "Day and night happen because Earth rotates on its axis every 24 hours, making different parts face the Sun. This rotation creates time zones and causes sunrise and sunset.",
+            "marks": 5
+          }
+        ]
+      },
+      {
+        "question": "What are the three layers of the Earth?",
+        "rubric": [
+          "Listing the three layers of the Earth",
+          "Describing the crust",
+          "Describing the mantle",
+          "Describing the core",
+          "Explaining the significance of each layer"
+        ],
+        "sample_answers": [
+          {
+            "answer": "The three layers of the Earth are the crust, mantle, and core.",
+            "marks": 1
+          },
+          {
+            "answer": "The three layers of the Earth are the crust, mantle, and core. The crust is the outermost layer.",
+            "marks": 2
+          },
+          {
+            "answer": "The three layers of the Earth are the crust, mantle, and core. The crust is the outermost layer, and the mantle is beneath it.",
+            "marks": 3
+          },
+          {
+            "answer": "The three layers of the Earth are the crust, mantle, and core. The crust is the outermost layer, the mantle lies beneath it, and the core is at the center.",
+            "marks": 4
+          },
+          {
+            "answer": "The three layers of the Earth are the crust, mantle, and core. The crust is the thin, outermost layer, the mantle is a thick, semi-solid layer beneath it, and the core is the dense center. Each layer has a crucial role in Earth's structure and geological processes.",
+            "marks": 5
+          }
+        
+        ]
+      },
+      {
+        "question": "What are the different types of forces?",
+        "rubric": [
+          "Defining force",
+          "Mentioning at least two types of forces",
+          "Providing examples of each type",
+          "Including friction as a force",
+          "Explaining why forces are important in daily life"
+        ],
+        "sample_answers": [
+          {
+            "answer": "A force is a push or pull.",
+            "marks": 1
+          },
+          {
+            "answer": "A force is a push or pull. There are contact and non-contact forces.",
+            "marks": 2
+          },
+          {
+            "answer": "A force is a push or pull. There are contact and non-contact forces, like friction and gravity.",
+            "marks": 3
+          },
+          {
+            "answer": "A force is a push or pull. There are contact and non-contact forces, like friction, gravity, and magnetic force.",
+            "marks": 4
+          },
+          {
+            "answer": "A force is a push or pull that changes motion. There are contact forces like friction and applied force, and non-contact forces like gravity and magnetism. Forces are important in daily life for movement, stopping objects, and using machines.",
+            "marks": 5
+          }
+        ]
+      },
+      {
+        "question": "What is an ecosystem?",
+        "rubric": [
+          "Defining an ecosystem",
+          "Mentioning living (biotic) components",
+          "Mentioning non-living (abiotic) components",
+          "Giving an example of an ecosystem",
+          "Explaining the balance between components"
+        ],
+        "sample_answers": [
+          {
+            "answer": "An ecosystem is a community of organisms.",
+            "marks": 1
+          },
+          {
+            "answer": "An ecosystem is a community of living things, like plants and animals.",
+            "marks": 2
+          },
+          {
+            "answer": "An ecosystem is a community of living things, like plants and animals, interacting with non-living things like water and air.",
+            "marks": 3
+          },
+          {
+            "answer": "An ecosystem is a community of living things interacting with non-living things, like a forest ecosystem with trees, animals, water, and soil.",
+            "marks": 4
+          },
+          {
+            "answer": "An ecosystem is a community of living things interacting with non-living things, like a forest. It maintains balance, ensuring survival through food chains and nutrient cycles.",
+            "marks": 5
+          }
+        ]
+      },
+      {
+        "question": "What is the largest planet in our solar system?",
+        "rubric": [
+          "Providing the correct planet name",
+          "Explaining why it is the largest",
+          "Mentioning its size relative to Earth",
+          "Mentioning key features such as the gas giant nature"
+        ],
+        "sample_answers": [
+          {
+            "answer": "The largest planet is Jupiter.",
+            "marks": 1
+          },
+          {
+            "answer": "The largest planet is Jupiter because it has the most mass.",
+            "marks": 2
+          },
+          {
+            "answer": "The largest planet is Jupiter because it is a gas giant and has the most mass in the solar system.",
+            "marks": 3
+          },
+          {
+            "answer": "The largest planet is Jupiter, a gas giant with a mass 318 times that of Earth.",
+            "marks": 4
+          },
+          {
+            "answer": "The largest planet is Jupiter, a gas giant with a mass 318 times that of Earth. It is the largest due to its size and gravitational pull.",
+            "marks": 5
+          }
+        ]
+      }
+    ]
+  }
+  

@@ -1,7 +1,5 @@
-import openai
-
 # Set your OpenAI API key
-openai.api_key = "OPENAI_API_KEY"
+openai.api_key = "sk-jxHNeitHqQ7Q1hArkTo2XQkpG_JUU0fdpgiRuoebcZT3BlbkFJTbMHcXre_nSUrX6Jzesp8peW0DYtE8EN0Cnt3zelwA"
 
 def evaluate_response(question, user_answer, marks_type):
     try:
@@ -118,4 +116,4 @@ if __name__ == "__main__":
         if awarded_marks is not None and total_marks is not None:
             print(f"\nMarks Analysis: {awarded_marks}/{total_marks}")
         else:
-            print("\nMarks Analysis: Unable to extract marks.")
+            print("\nMarks Analysis: Unable to extract marks.")  "

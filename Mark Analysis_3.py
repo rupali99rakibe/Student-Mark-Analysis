@@ -1,11 +1,19 @@
 import openai
 import re
+from langdetect import detect
+from langdetect.lang_detect_exception import LangDetectException
 
 # Set your OpenAI API key
 openai.api_key = "sk-jxHNeitHqQ7Q1hArkTo2XQkpG_JUU0fdpgiRuoebcZT3BlbkFJTbMHcXre_nSUrX6Jzesp8peW0DYtE8EN0Cnt3zelwA"
 
 def evaluate_response(question, user_answer, marks_type):
     try:
+        # Detect the language of the question and answer
+        try:
+            detected_language = detect(question + " " + user_answer)
+        except LangDetectException:
+            detected_language = "en"  # Default to English if detection fails
+
         # Map input marks to appropriate instructions
         marks_mapping = {
             "1": "1-2",
@@ -50,6 +58,9 @@ def evaluate_response(question, user_answer, marks_type):
         else:
             return "Invalid marks type. Please choose from 1-2, 3-4, 4-5, 5-7, or 10.", None, None
 
+        # Add language-specific instruction
+        instructions += f" Provide feedback in the detected language: {detected_language}."
+
         # Make API call to GPT-4 for evaluation
         response = openai.ChatCompletion.create(
             model="gpt-4",
@@ -59,7 +70,7 @@ def evaluate_response(question, user_answer, marks_type):
                     f"Question: {question}\n\n"
                     f"Student Answer: {user_answer}\n\n"
                     f"Total Marks: {marks_type}\n"
-                    f"Provide awarded marks and feedback."
+                    f"Provide awarded marks and feedback in {detected_language}."
                 )}
             ],
             max_tokens=500  # Allow detailed feedback
@@ -68,15 +79,21 @@ def evaluate_response(question, user_answer, marks_type):
         # Extract and return the evaluation and feedback
         evaluation_text = response["choices"][0]["message"]["content"].strip()
 
-        # Extract marks awarded (assuming GPT outputs something like 'Marks awarded: X/Y')
-        marks_match = re.search(r'\bMarks\s*awarded\s*[:\-]?\s*(\d+)\s*/\s*(\d+)', evaluation_text, re.IGNORECASE)
+        # Enhanced marks extraction logic
+        marks_match = re.search(
+            r'(?i)(?:marks\s*(awarded|given)?[:\-]?\s*|score\s*[:\-]?\s*)(\d+(\.\d+)?)\s*/\s*(\d+)', evaluation_text
+        )
         if marks_match:
-            awarded_marks = int(marks_match.group(1))
-            total_marks = int(marks_match.group(2))
+            awarded_marks = float(marks_match.group(2))
+            total_marks = int(marks_match.group(4))
         else:
-            # Fallback if marks cannot be parsed
             awarded_marks = None
-            total_marks = None
+            total_marks = int(marks_type) if marks_type.isdigit() else None
+
+        # Debug logs for troubleshooting
+        if awarded_marks is None or total_marks is None:
+            print("\nDEBUG: Marks extraction failed. Response text for review:")
+            print(evaluation_text)
 
         return evaluation_text, awarded_marks, total_marks
 
@@ -84,8 +101,12 @@ def evaluate_response(question, user_answer, marks_type):
         print(f"An error occurred: {e}")
         return "Sorry, I couldn't evaluate the response.", None, None
 
+
 if __name__ == "__main__":
-    print("Welcome to the Exam Checker! Evaluate student responses easily. (Type 'exit' or 'quit' to stop)")
+    print("Welcome to the Multilingual Exam Checker! Evaluate student responses easily. (Type 'exit' or 'quit' to stop)")
+
+    total_awarded_marks = 0
+    total_possible_marks = 0
 
     while True:
         # Input the exam question
@@ -93,7 +114,9 @@ if __name__ == "__main__":
 
         # Exit condition
         if question.lower() in ['exit', 'quit']:
-            print("Exiting the Exam Checker. Goodbye!")
+            print("\nExiting the Exam Checker. Here is the total marks summary:")
+            print(f"Total Marks Awarded: {total_awarded_marks}")
+            print(f"Total Possible Marks: {total_possible_marks}")
             break
 
         # Input student's answer
@@ -123,5 +146,7 @@ if __name__ == "__main__":
         # Print the marks breakdown if available
         if awarded_marks is not None and total_marks is not None:
             print(f"\nMarks Analysis: {awarded_marks}/{total_marks}")
+            total_awarded_marks += awarded_marks
+            total_possible_marks += total_marks
         else:
-            print("\nMarks Analysis: Unable to extract marks.")
+            print("\nEvaluation completed but marks extraction is not available in this response.")
